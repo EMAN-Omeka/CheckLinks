@@ -1,0 +1,23 @@
+table tr td.rc-200 {
+  background-color: #0fbc0f !important;
+}
+table tr td.rc-301 {
+  background-color: #109e10 !important;
+}
+table tr td.rc-302 {
+  background-color: #20f420 !important;
+}
+table tr td.rc-303 {
+  background-color: #97ff97 !important;
+}
+table tr td.rc-403,
+table tr td.rc-400,
+table tr td.rc-404,
+table tr td.rc-500 {
+  background-color: #ea042f !important;
+  color:white !important;
+}
+table tr td.cl-title {
+  text-align:center;
+  font-weight:bold;
+}
