@@ -27,20 +27,20 @@ class CheckLinksPlugin extends Omeka_Plugin_AbstractPlugin
   }
 
   function hookDefineRoutes($args)
-    {
-  		$router = $args['router'];
-   		$router->addRoute(
-  				'cl_page',
-  				new Zend_Controller_Router_Route(
-  						'checklinks',
-  						array(
-  								'module' => 'check-links',
-  								'controller'   => 'page',
-  								'action'       => 'checklinks',
-  						)
-  				)
-  		);
-    }
+  {
+		$router = $args['router'];
+ 		$router->addRoute(
+			'cl_page',
+			new Zend_Controller_Router_Route(
+				'checklinks',
+				array(
+					'module' => 'check-links',
+					'controller'   => 'page',
+					'action'       => 'checklinks',
+				)
+			)
+		);
+  }
 
   /**
    * Add the pages to the public main navigation options.
@@ -51,10 +51,10 @@ class CheckLinksPlugin extends Omeka_Plugin_AbstractPlugin
   public function filterAdminNavigationMain($nav)
   {
     $nav[] = array(
-                    'label' => __('Check Links'),
-                    'uri' => url('checklinks'),
-                    'recource' => 'CheckLinks_Page',
-                  );
+      'label' => __('Check Links'),
+      'uri' => url('checklinks'),
+//       'recource' => 'CheckLinks_Page',
+    );
     return $nav;
   }
 
@@ -62,10 +62,10 @@ class CheckLinksPlugin extends Omeka_Plugin_AbstractPlugin
   function hookDefineAcl($args)
   {
   	$acl = $args['acl'];
-  	$checkLinksAdmin = new Zend_Acl_Resource('CheckLinks_Page');
-  	$acl->add($checkLinksAdmin);
-  	$acl->deny(array('admin', 'contributor', 'editor'), array('CheckLinks_Page'));
-    $acl->allow(array('super'), array('CheckLinks_Page'));
+  	$acl->addResource(new Zend_Acl_Resource('CheckLinks_Page'));
+  	$acl->addResource(new Zend_Acl_Resource('check'), 'CheckLinks_Page');
+  	$acl->allow(array('super', 'admin', 'contributor', 'editor'), array('CheckLinks_Page'), null);
+  	$acl->deny(array('admin', 'contributor', 'editor'), array('CheckLinks_Page'), 'check');
   }
 
   /**

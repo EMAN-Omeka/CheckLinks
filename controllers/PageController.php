@@ -5,17 +5,23 @@ class CheckLinks_PageController extends Omeka_Controller_AbstractActionControlle
   	{
     	$db = get_db();
  			$recheck = $this->getParam('recheck');
-    	$content = "<a class='add button small green' href='" . WEB_ROOT . "/admin/checklinks?recheck=1'>" . __('Re-check') . "</a>";
-    	if ($recheck) {
+    	$acl = get_acl();
+    	$user = current_user();
+    	$auth = $acl->isAllowed($user->role, null, 'CheckLinks_Page', 'check');
+      $content = "";
+     	if ($auth) {
+       	$content .= "<a class='add button small green' href='" . WEB_ROOT . "/admin/checklinks?recheck=1'>" . __('Re-check') . "</a>";
+     	}
+    	if ($recheck && $auth) {
       	set_time_limit(0);
       	$db = get_db();
-      	$db->query("DELETE FROM `$db->CheckLinks`");
-/*
+        $db->query("DELETE FROM `$db->CheckLinks`");
+
         $query = "SELECT id, text, record_type, record_id FROM `$db->ElementTexts` ORDER BY record_type, id";
       	$texts = $db->query($query)->fetchAll();
-*/
+
         $texts = [];
-      	$query = "SELECT id, text, 'Simple-Page' record_type, id record_id FROM `$db->SimplePagesPages` ORDER BY id";
+       	$query = "SELECT id, text, 'Simple-Page' record_type, id record_id FROM `$db->SimplePagesPages` ORDER BY id";
       	$ss = $db->query($query)->fetchAll();
 
       	$query = "SELECT id, description text, 'Exhibit' record_type, id record_id FROM `$db->Exhibits` ORDER BY id";
@@ -72,6 +78,8 @@ class CheckLinks_PageController extends Omeka_Controller_AbstractActionControlle
         $content .= "<br /><br /><br /><div>$nbLinks liens vérifiés.</div>";
         $content .= "<div>$nbLinksProblem liens problématique(s).</div>";
         $content .= "<div>Temps d'exécution : $time secondes</div><br /><br />";
+    	} elseif (! $auth) {
+      	$content .= '<p>Pour mettre à jour la liste, il faut contacter le "super-administrateur" du site car la vérification des liens peut prendre énormément de temps et de ressources.</p>';
     	}
     	$content .= "<table><tr><td class='cl-title'>Lien</td><td class='cl-title'>Code</td><td class='cl-title'>Type</td><td class='cl-title'>Édition</td></tr>";
       $query = "SELECT * FROM `$db->CheckLinks` ORDER BY id";
